@@ -2,41 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chat</title>
-    <style>
-        #messages {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            height: 300px;
-            overflow-y: scroll;
-        }
-    </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.min.js" integrity="sha512-cdrLEb9X92f3Dm0tYANpbgsoOPOzn5g5J5Ds5QDB+/+ciwyEj9U5v3nfgnYfHmjCjCxhM8yM5Rb1kQ5k5Hg1lQ==" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Chat App</title>
+    <script src="static/main.js" defer></script>
 </head>
 <body>
-    <h1>Chat</h1>
-    <ul id="messages"></ul>
-    <form id="form">
-        <input id="input" autocomplete="off" autofocus placeholder="Type a message...">
-        <button>Send</button>
-    </form>
-    <script>
-        const socket = io.connect('http://' + document.domain + ':' + location.port);
-        $('form').submit(function(e){
-            e.preventDefault();
-            const message = $('#input').val();
-            console.log("Submitted message:", message);
-            socket.emit('message', message);
-            $('#input').val('');
-            return false;
-        });
-        socket.on('message', function(msg){
-            console.log("Received message:", msg);
-            $('#messages').append($('<li>').text(msg));
-            $('#messages').scrollTop($('#messages')[0].scrollHeight);
-        });
-    </script>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <form id="message-form">
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="message" placeholder="Type your message here..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
 </body>
 </html>
