@@ -5,9 +5,17 @@ const messagesDiv = document.getElementById("messages");
 
 const roomId = window.location.pathname.slice(1) || generateRoomId();
 
+let selectedModel = "gpt-3.5-turbo";
+const maxTokens = selectedModel === "gpt-4" ? 7000 : 3000;
+
+
 if (window.location.pathname === "/") {
     window.history.pushState({}, "", `/${roomId}`);
 }
+
+document.getElementById("model-switch").addEventListener("change", (e) => {
+    selectedModel = e.target.checked ? "gpt-4" : "gpt-3.5-turbo";
+});
 
 function generateRoomId() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -23,9 +31,18 @@ document.getElementById("new-chat-button").addEventListener("click", () => {
     window.location.href = `/${roomId}`;
 });
 
+let userName = "";
+
+async function getUserName() {
+    if (!userName) {
+        userName = prompt("Please enter your name:");
+    }
+}
+
 messageForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const name = nameInput.value;
+    await getUserName();
+    const name = userName;
     const message = messageInput.value;
 
     if (message.startsWith("/gpt")) {
@@ -58,7 +75,7 @@ messageForm.addEventListener("submit", async (e) => {
 
         const response = await fetch(`/gpt/${roomId}`, {
             method: "POST",
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify({ prompt, model: selectedModel, max_tokens: maxTokens }),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -96,6 +113,38 @@ messageForm.addEventListener("submit", async (e) => {
 
     messageInput.value = "";
 });
+
+function copyChat() {
+    const chatContent = messages.map(message => {
+        return `${message.name}: ${message.message} (${message.timestamp})`;
+    }).join("\n");
+
+    const textArea = document.createElement("textarea");
+    textArea.value = chatContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textArea);
+    alert("Chat copied to clipboard");
+}
+
+function saveChat() {
+    const chatContent = messages.map(message => {
+        return `${message.name}: ${message.message} (${message.timestamp})`;
+    }).join("\n");
+
+    const blob = new Blob([chatContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "chat.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+document.getElementById("copy-chat-button").addEventListener("click", copyChat);
+document.getElementById("save-chat-button").addEventListener("click", saveChat);
+
 
 function renderMessages() {
     let html = "";

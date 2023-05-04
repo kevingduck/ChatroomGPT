@@ -43,18 +43,21 @@ def catch_all(path):
 @app.route("/gpt/<room_id>", methods=["POST"])
 def gpt(room_id):
     prompt = request.json["prompt"]
+    model = request.json["model"]
+    max_tokens = request.json["max_tokens"]
     response = openai.ChatCompletion.create(
-        model="gpt-4",
+        model=model,
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "assistant", "content": "Provide examples"},
             {"role": "user", "content": prompt},
         ],
         temperature=0.8,
-        max_tokens=8000,
+        max_tokens=max_tokens,
     )
 
     return jsonify({"response": response.choices[0].message.content})
+
 
 
 @app.route("/send_gpt_response/<room_id>", methods=["POST"])

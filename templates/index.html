@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
     <title>Flask Chat App</title>
+    <link rel="stylesheet" href="static/styles.css">
     <script src="static/main.js" defer></script>
 </head>
 <body>
     <button id="new-chat-button">New chat</button>
+    <button id="copy-chat-button">Copy chat</button>
+    <button id="save-chat-button">Save chat</button>
+    <label class="switch">
+        <input type="checkbox" id="model-switch">
+        <span class="slider"></span>
+        <span class="model-label fast">Fast</span>
+        <span class="model-label smart">Smart</span>
+    </label>
     <div id="chat-container">
         <div id="messages"></div>
         <form id="message-form">
-            <input type="text" id="name" placeholder="Name" required>
             <input type="text" id="message" placeholder="Type your message here..." required>
             <button type="submit">Send</button>
         </form>        
