@@ -5,7 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-openai.api_key="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"
+openai.api_key="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"
 
 messages = []
 
@@ -41,6 +41,17 @@ def gpt():
     )
 
     return jsonify({"response": response.choices[0].message.content})
+
+
+@app.route("/send_gpt_response", methods=["POST"])
+def send_gpt_response():
+    content = request.json
+    name = content["name"]
+    message = content["message"]
+    timestamp = content["timestamp"]
+    messages.append({"name": name, "message": message, "timestamp": timestamp})
+    return jsonify({"status": "success"})
+
 
 
 if __name__ == "__main__":

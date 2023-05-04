@@ -10,9 +10,26 @@ messageForm.addEventListener("submit", async (e) => {
 
     if (message.startsWith("/gpt")) {
         const prompt = message.slice(4).trim();
+        const gptCommandMessage = {
+            name: name,
+            message: `used /gpt: ${prompt}`,
+            timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
+        };
+
+        messages.push(gptCommandMessage);
+        renderMessages();
+
+        await fetch("/send_message", {
+            method: "POST",
+            body: JSON.stringify(gptCommandMessage),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
         const thinkingMessage = {
             name: "GPT-4",
-            message: "thinking...",
+            message: "Let me think about that...",
             timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
         };
 
@@ -29,13 +46,23 @@ messageForm.addEventListener("submit", async (e) => {
 
         const result = await response.json();
         messages.pop();
-        messages.push({
+        const gptMessage = {
             name: "GPT-4",
             message: result.response.trim(),
             timestamp: new Date().toISOString().slice(0, 19).replace("T", " "),
+        };
+
+        messages.push(gptMessage);
+        renderMessages();
+
+        await fetch("/send_gpt_response", {
+            method: "POST",
+            body: JSON.stringify(gptMessage),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
 
-        renderMessages();
     } else {
         await fetch("/send_message", {
             method: "POST",
@@ -56,11 +83,15 @@ function renderMessages() {
 
     for (let message of messages) {
         html += `
-            <div class="message">
-                <strong>${message.name}</strong>: ${message.message} <br>
-                <small>${message.timestamp}</small>
-            </div>
-        `;
+    <div class="message">
+        <strong>${message.name}</strong>: ${message.message.startsWith("used /gpt")
+                ? `<em>${message.message}</em>`
+                : message.message
+            } <br>
+        <small>${message.timestamp}</small>
+    </div>
+`;
+
     }
 
     messagesDiv.innerHTML = html;
