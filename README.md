@@ -1,6 +1,10 @@
 # ChatroomGPT
 
-Welcome to the ChatroomGPT repository! This application allows you to create chat rooms where you can chat with other people and interact with ChatGPT. The app provides a shared prompting experience, enabling users to engage with ChatGPT collaboratively.
+Welcome to the ChatroomGPT repository! 
+
+This application allows you to **create chat rooms where you can chat with other people and interact with ChatGPT**. 
+
+This simple app provides a shared prompting experience, enabling users to engage with ChatGPT collaboratively.
 
 ## Features
 - Start a chat room and get shareable link instantly that you can send to others.
@@ -33,7 +37,13 @@ To get started with the ChatroomGPT app, follow these steps:
 
 3. Install the required dependencies:
    ```
-   pip install -r requirements.txt
+   pip install flask openai
+   ```
+
+4. __Important!__ In app.py, add your OpenAI API key from https://platform.openai.com/account/api-keys
+
+   ```
+   openai.api_key={enter your key}
    ```
 
 ### Running the Application
