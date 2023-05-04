@@ -3,6 +3,26 @@ const messageInput = document.getElementById("message");
 const nameInput = document.getElementById("name");
 const messagesDiv = document.getElementById("messages");
 
+const roomId = window.location.pathname.slice(1) || generateRoomId();
+
+if (window.location.pathname === "/") {
+    window.history.pushState({}, "", `/${roomId}`);
+}
+
+function generateRoomId() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let roomId = "";
+    for (let i = 0; i < 4; i++) {
+        roomId += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return roomId;
+}
+
+document.getElementById("new-chat-button").addEventListener("click", () => {
+    const roomId = generateRoomId();
+    window.location.href = `/${roomId}`;
+});
+
 messageForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = nameInput.value;
@@ -19,7 +39,7 @@ messageForm.addEventListener("submit", async (e) => {
         messages.push(gptCommandMessage);
         renderMessages();
 
-        await fetch("/send_message", {
+        await fetch(`/send_message/${roomId}`, {
             method: "POST",
             body: JSON.stringify(gptCommandMessage),
             headers: {
@@ -36,7 +56,7 @@ messageForm.addEventListener("submit", async (e) => {
         messages.push(thinkingMessage);
         renderMessages();
 
-        const response = await fetch("/gpt", {
+        const response = await fetch(`/gpt/${roomId}`, {
             method: "POST",
             body: JSON.stringify({ prompt }),
             headers: {
@@ -55,16 +75,15 @@ messageForm.addEventListener("submit", async (e) => {
         messages.push(gptMessage);
         renderMessages();
 
-        await fetch("/send_gpt_response", {
+        await fetch(`/send_gpt_response/${roomId}`, {
             method: "POST",
             body: JSON.stringify(gptMessage),
             headers: {
                 "Content-Type": "application/json",
             },
         });
-
     } else {
-        await fetch("/send_message", {
+        await fetch(`/send_message/${roomId}`, {
             method: "POST",
             body: JSON.stringify({ name, message }),
             headers: {
@@ -83,22 +102,22 @@ function renderMessages() {
 
     for (let message of messages) {
         html += `
-    <div class="message">
-        <strong>${message.name}</strong>: ${message.message.startsWith("used /gpt")
+            <div class="message">
+                <strong>${message.name}</strong>: ${
+            message.message.startsWith("used /gpt")
                 ? `<em>${message.message}</em>`
                 : message.message
-            } <br>
-        <small>${message.timestamp}</small>
-    </div>
-`;
-
+        } <br>
+                <small>${message.timestamp}</small>
+            </div>
+        `;
     }
 
     messagesDiv.innerHTML = html;
 }
 
 async function getMessages() {
-    const response = await fetch("/get_messages");
+    const response = await fetch(`/get_messages/${roomId}`);
     messages = await response.json();
     renderMessages();
 }
