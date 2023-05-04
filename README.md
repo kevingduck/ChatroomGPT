@@ -6,6 +6,10 @@ This application allows you to **create chat rooms where you can chat with other
 
 This simple app provides a shared prompting experience, enabling users to engage with ChatGPT collaboratively.
 
+
+https://user-images.githubusercontent.com/2180038/236108460-a09f1a50-b95e-4772-82f7-612b76df6ff4.mp4
+
+
 ## Features
 - Start a chat room and get shareable link instantly that you can send to others.
 - Use "/gpt" to send your message to ChatGPT (e.g., "/gpt who was the first person in space?").
