@@ -5,7 +5,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-openai.api_key=""
+openai.api_key="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"
 
 messages = {}
 
